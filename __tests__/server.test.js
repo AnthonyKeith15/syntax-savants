@@ -53,35 +53,37 @@ describe("Testing V2 routes", () => {
   });
 
   test('GET racketEntry with ID', async () => {
-    const withoutStatusResponse = await request.get('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
+    const withoutStatusResponse = await request.get('/api/v2/racketEntry/1').set('Authorization', `Bearer ${token}`);
     const withoutStringerResponse = await request.get('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
 
-    expect(withoutStatusResponse.body.name).toEqual('banana');
-    expect(withoutStringerResponse.body.name).toEqual('shirt');
+    expect(withoutStatusResponse.body.player_id).toEqual(299);
+    expect(withoutStringerResponse.body.player_id).toEqual(7);
   });
 
-  xtest('PUT racketEntry with ID', async () => {
+  test('PUT racketEntry with ID', async () => {
     let updatedRacketEntryWithoutstatus = {
-      name: 'apple',
-      calories: 200,
-      type: 'fruit'
+      status: 'In Progress'
     }
 
     let updatedRacketEntryWithoutStringer = {
-      name: 'pants',
-      color: 'black',
-      size: 'medium'
+      player_id: 77,
+      stringer_id: 88,
+      racket_name: "test racket2",
+      status: 'Completed'
     }
-
+1
     const withoutStatusResponse = await request.put('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`).send(updatedRacketEntryWithoutstatus);
     const withoutStringerResponse = await request.put('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`).send(updatedRacketEntryWithoutStringer);
 
-    expect(withoutStatusResponse.body.name).toEqual('apple');
-    expect(withoutStringerResponse.body.name).toEqual('pants');
+    expect(withoutStatusResponse.body.status).toEqual('In Progress');
+    expect(withoutStringerResponse.body.player_id).toEqual(77);
+    expect(withoutStringerResponse.body.stringer_id).toEqual(88);
+    expect(withoutStringerResponse.body.racket_name).toEqual('test racket2');
+    expect(withoutStringerResponse.body.status).toEqual('Completed');
   });
 
-  xtest('DELETE racketEntry with ID', async() => {
-    const withoutStatusResponse = await request.delete('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
+  test('DELETE racketEntry with ID', async() => {
+    const withoutStatusResponse = await request.delete('/api/v2/racketEntry/1').set('Authorization', `Bearer ${token}`);
     const withoutStringerResponse = await request.delete('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
 
     expect(withoutStatusResponse.body).toEqual(1);
