@@ -13,73 +13,6 @@ afterAll(async () => {
   await db.drop();
 })
 
-describe("Testing V1 routes", () => {
-  
-  test('POST into food/clothes', async () => {
-    let newFood = {
-      name: 'banana',
-      calories: 100,
-      type: 'fruit'
-    }
-
-    let newClothes = {
-      name: 'shirt',
-      color: 'blue',
-      size: 'medium'
-    }
-
-    const foodResponse = await request.post('/api/v1/food').send(newFood);
-    const clothesResponse = await request.post('/api/v1/clothes').send(newClothes);
-    
-    expect(foodResponse.body.name).toEqual('banana');
-    expect(clothesResponse.body.name).toEqual('shirt');
-  })
-
-  test('GET all from food/clothes', async () => {
-    const foodResponse = await request.get('/api/v1/food');
-    const clothesResponse = await request.get('/api/v1/clothes');
-
-    expect(foodResponse.body[0].name).toEqual('banana');
-    expect(clothesResponse.body[0].name).toEqual('shirt');
-  });
-
-  test('GET food/clothes with ID', async () => {
-    const foodResponse = await request.get('/api/v1/food/1');
-    const clothesResponse = await request.get('/api/v1/clothes/1');
-
-    expect(foodResponse.body.name).toEqual('banana');
-    expect(clothesResponse.body.name).toEqual('shirt');
-  });
-
-  test('PUT food/clothes with ID', async () => {
-    let newFood = {
-      name: 'apple',
-      calories: 200,
-      type: 'fruit'
-    }
-
-    let newClothes = {
-      name: 'pants',
-      color: 'black',
-      size: 'medium'
-    }
-
-    const foodResponse = await request.put('/api/v1/food/1').send(newFood);
-    const clothesResponse = await request.put('/api/v1/clothes/1').send(newClothes);
-
-    expect(foodResponse.body.name).toEqual('apple');
-    expect(clothesResponse.body.name).toEqual('pants');
-  });
-
-  test('DELETE food/clothes with ID', async() => {
-    const foodResponse = await request.delete('/api/v1/food/1');
-    const clothesResponse = await request.delete('/api/v1/clothes/1');
-
-    expect(foodResponse.body).toEqual(1);
-    expect(clothesResponse.body).toEqual(1);
-  });
-});
-
 describe("Testing V2 routes", () => {
   let admin = {
     username: 'admin',
@@ -88,70 +21,72 @@ describe("Testing V2 routes", () => {
   }
   let token = '';
 
-  test('POST into food/clothes', async () => {
-    let newFood = {
-      name: 'banana',
-      calories: 100,
-      type: 'fruit'
+  test('POST into food/racketEntry', async () => {
+    let racketEntryWithoutstatus = {
+      player_id: 299,
+      stringer_id: 38,
+      racket_name: "test racket",
     }
 
-    let newClothes = {
-      name: 'shirt',
-      color: 'blue',
-      size: 'medium'
+    let racketEntryWithoutStringer = {
+      player_id: 7,
+      racket_name: "test racket",
+      status: 'Received'
     }
 
     let response = await request.post('/signup').send(admin);
     token = response.body.user.token
 
-    const foodResponse = await request.post('/api/v2/food').set('Authorization', `Bearer ${token}`).send(newFood);
-    const clothesResponse = await request.post('/api/v2/clothes').set('Authorization', `Bearer ${token}`).send(newClothes);
+    const withoutStatusResponse = await request.post('/api/v2/racketEntry').set('Authorization', `Bearer ${token}`).send(racketEntryWithoutstatus);
+    const withoutStringerResponse = await request.post('/api/v2/racketEntry').set('Authorization', `Bearer ${token}`).send(racketEntryWithoutStringer);
     
-    expect(foodResponse.body.name).toEqual('banana');
-    expect(clothesResponse.body.name).toEqual('shirt');
+    expect(withoutStatusResponse.body.racket_name).toEqual('test racket');
+    expect(withoutStringerResponse.body.racket_name).toEqual('test racket');
   })
 
-  test('GET all from food/clothes', async () => {
-    const foodResponse = await request.get('/api/v1/food').set('Authorization', `Bearer ${token}`);
-    const clothesResponse = await request.get('/api/v1/clothes').set('Authorization', `Bearer ${token}`);
+  test('GET all from racketEntry', async () => {
+    const listOfEntries = await request.get('/api/v2/racketEntry').set('Authorization', `Bearer ${token}`);
 
-    expect(foodResponse.body[0].name).toEqual('banana');
-    expect(clothesResponse.body[0].name).toEqual('shirt');
+    console.log(listOfEntries.body);
+    expect(listOfEntries.body[0].player_id).toEqual(299);
+    expect(listOfEntries.body[1].player_id).toEqual(7);
   });
 
-  test('GET food/clothes with ID', async () => {
-    const foodResponse = await request.get('/api/v1/food/2').set('Authorization', `Bearer ${token}`);
-    const clothesResponse = await request.get('/api/v1/clothes/2').set('Authorization', `Bearer ${token}`);
+  test('GET racketEntry with ID', async () => {
+    const withoutStatusResponse = await request.get('/api/v2/racketEntry/1').set('Authorization', `Bearer ${token}`);
+    const withoutStringerResponse = await request.get('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
 
-    expect(foodResponse.body.name).toEqual('banana');
-    expect(clothesResponse.body.name).toEqual('shirt');
+    expect(withoutStatusResponse.body.player_id).toEqual(299);
+    expect(withoutStringerResponse.body.player_id).toEqual(7);
   });
 
-  xtest('PUT food/clothes with ID', async () => {
-    let newFood = {
-      name: 'apple',
-      calories: 200,
-      type: 'fruit'
+  test('PUT racketEntry with ID', async () => {
+    let updatedRacketEntryWithoutstatus = {
+      status: 'In Progress'
     }
 
-    let newClothes = {
-      name: 'pants',
-      color: 'black',
-      size: 'medium'
+    let updatedRacketEntryWithoutStringer = {
+      player_id: 77,
+      stringer_id: 88,
+      racket_name: "test racket2",
+      status: 'Completed'
     }
+1
+    const withoutStatusResponse = await request.put('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`).send(updatedRacketEntryWithoutstatus);
+    const withoutStringerResponse = await request.put('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`).send(updatedRacketEntryWithoutStringer);
 
-    const foodResponse = await request.put('/api/v1/food/2').set('Authorization', `Bearer ${token}`).send(newFood);
-    const clothesResponse = await request.put('/api/v1/clothes/2').set('Authorization', `Bearer ${token}`).send(newClothes);
-
-    expect(foodResponse.body.name).toEqual('apple');
-    expect(clothesResponse.body.name).toEqual('pants');
+    expect(withoutStatusResponse.body.status).toEqual('In Progress');
+    expect(withoutStringerResponse.body.player_id).toEqual(77);
+    expect(withoutStringerResponse.body.stringer_id).toEqual(88);
+    expect(withoutStringerResponse.body.racket_name).toEqual('test racket2');
+    expect(withoutStringerResponse.body.status).toEqual('Completed');
   });
 
-  xtest('DELETE food/clothes with ID', async() => {
-    const foodResponse = await request.delete('/api/v1/food/2').set('Authorization', `Bearer ${token}`);
-    const clothesResponse = await request.delete('/api/v1/clothes/2').set('Authorization', `Bearer ${token}`);
+  test('DELETE racketEntry with ID', async() => {
+    const withoutStatusResponse = await request.delete('/api/v2/racketEntry/1').set('Authorization', `Bearer ${token}`);
+    const withoutStringerResponse = await request.delete('/api/v2/racketEntry/2').set('Authorization', `Bearer ${token}`);
 
-    expect(foodResponse.body).toEqual(1);
-    expect(clothesResponse.body).toEqual(1);
+    expect(withoutStatusResponse.body).toEqual(1);
+    expect(withoutStringerResponse.body).toEqual(1);
   })
 })
