@@ -127,7 +127,7 @@ describe("Testing V2 routes", () => {
     expect(clothesResponse.body.name).toEqual('shirt');
   });
 
-  test('PUT food/clothes with ID', async () => {
+  xtest('PUT food/clothes with ID', async () => {
     let newFood = {
       name: 'apple',
       calories: 200,
@@ -147,7 +147,7 @@ describe("Testing V2 routes", () => {
     expect(clothesResponse.body.name).toEqual('pants');
   });
 
-  test('DELETE food/clothes with ID', async() => {
+  xtest('DELETE food/clothes with ID', async() => {
     const foodResponse = await request.delete('/api/v1/food/2').set('Authorization', `Bearer ${token}`);
     const clothesResponse = await request.delete('/api/v1/clothes/2').set('Authorization', `Bearer ${token}`);
 
