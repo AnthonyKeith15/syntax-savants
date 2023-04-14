@@ -39,7 +39,7 @@ describe('Testing auth routes ', () => {
     expect(token).toBeTruthy();
   });
 
-  xtest("Access routes that require the right token", async () => { 
+  test("Access routes that require the right token", async () => { 
     let firstResponse = await request.get('/secret').set('Authorization', `Bearer ${token}`);
 
     let secondResponse = await request.get('/users').set('Authorization', `Basic ${token}`);
@@ -47,5 +47,7 @@ describe('Testing auth routes ', () => {
     expect(firstResponse.text).toEqual('Welcome to the secret area');
     expect(secondResponse.body[0]).toEqual('test');
   });
+
+  
 
 })
